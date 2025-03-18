@@ -1,29 +1,21 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:task_project/api_integration/repo/userdata.dart';
 import 'package:task_project/model/user_model.dart';
 
 class ApiViewModel extends ChangeNotifier{
+  late ApiServices apiServices = ApiServices();
 
-
-Future<List<UserData>>  fetchUserData() async {
-  Dio dio = Dio();
-
- final url = "https://jsonplaceholder.typicode.com/todos";
-
-try{
- final response = await dio.get(url);
- if(response.statusCode == 200){
-
-final data =response.data;
-return  data.map((element) => UserData.fromJson(element)).toList();
- }else{
-  print('Failed to load data');
- }
-} catch (e) {
- throw Exception(e);
-}
-
-
+List <UserData> data = [];
+fetchUserData() async{
+  try{
+    final response = await  apiServices.fetchUserData();
+    if(response != null){
+      data = response;
+      notifyListeners();
+    }
+  } catch (e){
+    throw('Exception $e');
+  }
 }
 
 }
